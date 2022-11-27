@@ -1,0 +1,79 @@
+
+# iam-apiserver configuration template
+
+# RESTful configuration
+server:
+  mode: debug # server mode: release, debug, test，default release
+  healthz: true # health check，if enabled /healthz routing will be installed, default true.
+  middlewares: recovery,logger,secure,nocache,cors,dump # list of loaded gin middlewares, multiple middleware, separated by commas(,)
+  max-ping-count: 3 # After the service starts, the number of self-test attempts, default 3
+
+# GRPC configuration
+grpc:
+  bind-address: ${IAM_APISERVER_GRPC_BIND_ADDRESS} # Ip address of grpc secure mode, default 0.0.0.0
+  bind-port: ${IAM_APISERVER_GRPC_BIND_PORT} # Port of grpc secure mode, default 8081
+
+# HTTP configuration
+insecure:
+    bind-address: ${IAM_APISERVER_INSECURE_BIND_ADDRESS} # Bound insecure ip address, set to 0.0.0.0 means use all network interfaces, default 127.0.0.1
+    bind-port: ${IAM_APISERVER_INSECURE_BIND_PORT} # Provides insecure authenticated listening port, default 8080
+
+# HTTPS configuration
+secure:
+    bind-address: ${IAM_APISERVER_SECURE_BIND_ADDRESS} # Ip address for https secure mode, default 0.0.0.0 
+    bind-port: ${IAM_APISERVER_SECURE_BIND_PORT} # The port number to use https secure mode, set to 0 means https is not enabled, the default is 8443 
+    tls:
+        #cert-dir: .iam/cert # The directory where the TLS certificate is located, the default value is /var/run/iam
+        #pair-name: iam # TLS private key pair name, default iam
+        cert-key:
+            cert-file: ${IAM_APISERVER_SECURE_TLS_CERT_KEY_CERT_FILE} # Path to the file containing the x509 certificate, authenticated with HTTPS
+            private-key-file: ${IAM_APISERVER_SECURE_TLS_CERT_KEY_PRIVATE_KEY_FILE} # TLS private key
+
+# MySQL configuration
+mysql:
+  host: ${MARIADB_HOST} # MySQL machine ip and port, default 127.0.0.1:3306
+  username: ${MARIADB_USERNAME} # MySQL user name (recommended to authorize minimum permission set) 
+  password: ${MARIADB_PASSWORD} # MySQL user password
+  database: ${MARIADB_DATABASE} # The name of the database used by the iam system
+  max-idle-connections: 100 # MySQL Maximum idle connections, default 100
+  max-open-connections: 100 # Maximum number of open MySQL connections, default 100
+  max-connection-life-time: 10s # Maximum idle connection survival time, default 10s
+  log-level: 4 # GORM log level, 1: silent, 2:error, 3:warn, 4:info
+
+# Redis configuration
+redis:
+  host: ${REDIS_HOST} # redis address, default 127.0.0.1:6379
+  port: ${REDIS_PORT} # redis port, default 6379
+  password: ${REDIS_PASSWORD} # redis password
+  #addrs:
+  #master-name: # redis cluster master name
+  #username: # redis login username
+  #database: # redis database
+  #optimisation-max-idle:  # The maximum number of free connections in the redis connection pool
+  #optimisation-max-active: # Maximum number of active connections
+  #timeout: # Timeout time when connecting to redis
+  #enable-cluster: # Whether to enable cluster mode
+  #use-ssl: # Whether TLS is enabled
+  #ssl-insecure-skip-verify: # Allow self-signed certificates when connecting to redis
+
+# JWT configuration
+jwt:
+  realm: JWT # jwt signage
+  key: dfVpOK8LZeJLZHYmHdb1VdyRrACKpqoo # Server side key
+  timeout: 24h # token Expiration time (hour)
+  max-refresh: 24h # token Update time (hours)
+
+log:
+    name: apiserver # Logger name
+    development: true # Whether it is development mode. If it is development mode, a stack trace is performed on DPanicLevel.
+    level: debug # Logging levels, in descending order of priority: debug, info, warn, error, dpanic, panic, fatal.
+    format: console # The supported log output format, currently supports console and json two. console is actually text format.
+    enable-color: true # Whether to enable color output, true:yes, false:no
+    disable-caller: false # Whether caller is enabled or not, if it is enabled, the file, function and line number where the call log is located will be shown in the log
+    disable-stacktrace: false # Whether to disable printing of stack information at panic level and above
+    output-paths: ${IAM_LOG_DIR}/iam-apiserver.log,stdout # Support output to multiple outputs, comma separated. Support output to standard output (stdout) and files.
+    error-output-paths: ${IAM_LOG_DIR}/iam-apiserver.error.log # zap internal (non-business) error log output path, multiple outputs, comma separated
+
+feature:
+  enable-metrics: true # open metrics, router:  /metrics
+  profiling: true # Enable performance analysis, you can view the program stack, threads and other system information via <host>:<port>/debug/pprof/ address, default value is true

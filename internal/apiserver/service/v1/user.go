@@ -22,6 +22,7 @@ type UserSrv interface {
 	ChangePassword(ctx context.Context, user *v1.User) error
 	Delete(ctx context.Context, username string, opts metav1.DeleteOptions) error
 	List(ctx context.Context, opts metav1.ListOptions) (*v1.UserList, error)
+	DeleteCollection(ctx context.Context, usernames []string, opts metav1.DeleteOptions) error
 }
 
 type userService struct {
@@ -133,6 +134,13 @@ func (u *userService) List(ctx context.Context, opts metav1.ListOptions) (*v1.Us
 	log.L(ctx).Debugf("get %d users from backend storage.", len(infos))
 
 	return &v1.UserList{ListMeta: users.ListMeta, Items: infos}, nil
+}
+
+func (u *userService) DeleteCollection(ctx context.Context, usernames []string, opts metav1.DeleteOptions) error {
+	if err := u.store.Users().DeleteCollection(ctx, usernames, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	return nil
 }
 
 var _ UserSrv = (*userService)(nil)

@@ -4,6 +4,7 @@ import (
 	"go_iam/internal/apiserver/controller/v1/user"
 	"go_iam/internal/apiserver/store/mysql"
 	"go_iam/internal/pkg/code"
+	"go_iam/internal/pkg/middleware"
 	"go_iam/internal/pkg/middleware/auth"
 
 	"github.com/gin-gonic/gin"
@@ -44,8 +45,12 @@ func installController(g *gin.Engine) *gin.Engine {
 		{
 			userController := user.NewUserController(storeIns)
 
+			// Add admin validation for this group.
+			userv1.Use(auto.AuthFunc(), middleware.Validation())
+
 			userv1.POST("", userController.Create)
-			userv1.GET(":name", userController.Get) //admin api
+			userv1.GET(":name", userController.Get)    //admin api
+			userv1.PUT(":name", userController.Update) //admin api
 		}
 	}
 

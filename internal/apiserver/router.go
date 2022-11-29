@@ -1,6 +1,8 @@
 package apiserver
 
 import (
+	"go_iam/internal/apiserver/controller/v1/user"
+	"go_iam/internal/apiserver/store/mysql"
 	"go_iam/internal/pkg/code"
 	"go_iam/internal/pkg/middleware/auth"
 
@@ -32,6 +34,19 @@ func installController(g *gin.Engine) *gin.Engine {
 	g.NoRoute(auto.AuthFunc(), func(c *gin.Context) {
 		core.WriteResponse(c, errors.WithCode(code.ErrPageNotFound, "Page not found."), nil)
 	})
+
+	//v1 handlers, requiring authentication
+	storeIns, _ := mysql.GetMySQLFactoryOr(nil) // Get mysql store
+	v1 := g.Group("/v1")
+	{
+		//user RESTful resource
+		userv1 := v1.Group("/users")
+		{
+			userController := user.NewUserController(storeIns)
+
+			userv1.POST("", userController.Create)
+		}
+	}
 
 	return g
 }

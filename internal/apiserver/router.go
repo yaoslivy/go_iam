@@ -53,6 +53,8 @@ func installController(g *gin.Engine) *gin.Engine {
 			userv1.PUT(":name", userController.Update) //update the data, except for the password (admin api)
 			userv1.PUT(":name/change-password", userController.ChangePassword)
 			userv1.DELETE(":name", userController.Delete) //(admin api)
+
+			userv1.GET("", userController.List) //BindQuery(admin api)
 		}
 	}
 

@@ -5,7 +5,9 @@ import (
 	"go_iam/internal/apiserver/store"
 	"go_iam/internal/pkg/code"
 	v1 "go_iam/internal/pkg/model/apiserver/v1"
+	"go_iam/pkg/log"
 	"regexp"
+	"sync"
 
 	"github.com/marmotedu/errors"
 
@@ -19,6 +21,7 @@ type UserSrv interface {
 	Update(ctx context.Context, user *v1.User, opts metav1.UpdateOptions) error
 	ChangePassword(ctx context.Context, user *v1.User) error
 	Delete(ctx context.Context, username string, opts metav1.DeleteOptions) error
+	List(ctx context.Context, opts metav1.ListOptions) (*v1.UserList, error)
 }
 
 type userService struct {
@@ -63,6 +66,73 @@ func (u *userService) Delete(ctx context.Context, username string, opts metav1.D
 		return err
 	}
 	return nil
+}
+
+// List returns user list in the storage. This function has a good performance.
+func (u *userService) List(ctx context.Context, opts metav1.ListOptions) (*v1.UserList, error) {
+	users, err := u.store.Users().List(ctx, opts)
+	if err != nil {
+		log.L(ctx).Errorf("list users from storage failed: %s", err.Error())
+		return nil, errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	wg := sync.WaitGroup{}
+	errChan := make(chan error, 1)
+	finished := make(chan error, 1)
+
+	var m sync.Map
+
+	// Improve query efficiency in parallel
+	for _, user := range users.Items {
+		wg.Add(1)
+
+		go func(user *v1.User) {
+			defer wg.Done()
+
+			//some cost time process
+			policies, err := u.store.Policies().List(ctx, user.Name, metav1.ListOptions{})
+			if err != nil {
+				errChan <- errors.WithCode(code.ErrDatabase, err.Error())
+				return
+			}
+
+			m.Store(user.ID, &v1.User{
+				ObjectMeta: metav1.ObjectMeta{
+					ID:         user.ID,
+					InstanceID: user.InstanceID,
+					Name:       user.Name,
+					Extend:     user.Extend,
+					CreatedAt:  user.CreatedAt,
+					UpdatedAt:  user.UpdatedAt,
+				},
+				Nickname:    user.Nickname,
+				Email:       user.Email,
+				Phone:       user.Phone,
+				TotalPolicy: policies.TotalCount,
+				LoginedAt:   user.LoginedAt,
+			})
+		}(user)
+	}
+
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return nil, err
+	}
+
+	infos := make([]*v1.User, 0, len(users.Items))
+	for _, user := range users.Items {
+		info, _ := m.Load(user.ID)
+		infos = append(infos, info.(*v1.User))
+	}
+
+	log.L(ctx).Debugf("get %d users from backend storage.", len(infos))
+
+	return &v1.UserList{ListMeta: users.ListMeta, Items: infos}, nil
 }
 
 var _ UserSrv = (*userService)(nil)

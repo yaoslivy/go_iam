@@ -15,6 +15,7 @@ import (
 //UserSrv defines functions used to handle user request.
 type UserSrv interface {
 	Create(ctx context.Context, user *v1.User, opts metav1.CreateOptions) error
+	Get(ctx context.Context, username string, opts metav1.GetOptions) (*v1.User, error)
 }
 
 type userService struct {
@@ -29,6 +30,14 @@ func (u *userService) Create(ctx context.Context, user *v1.User, opts metav1.Cre
 		return errors.WithCode(code.ErrDatabase, err.Error())
 	}
 	return nil
+}
+
+func (u *userService) Get(ctx context.Context, username string, opts metav1.GetOptions) (*v1.User, error) {
+	user, err := u.store.Users().Get(ctx, username, opts)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 var _ UserSrv = (*userService)(nil)

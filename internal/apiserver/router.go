@@ -45,6 +45,7 @@ func installController(g *gin.Engine) *gin.Engine {
 			userController := user.NewUserController(storeIns)
 
 			userv1.POST("", userController.Create)
+			userv1.GET(":name", userController.Get) //admin api
 		}
 	}
 

@@ -49,8 +49,9 @@ func installController(g *gin.Engine) *gin.Engine {
 			userv1.Use(auto.AuthFunc(), middleware.Validation())
 
 			userv1.POST("", userController.Create)
-			userv1.GET(":name", userController.Get)    //admin api
-			userv1.PUT(":name", userController.Update) //admin api
+			userv1.GET(":name", userController.Get)    //(admin api)
+			userv1.PUT(":name", userController.Update) //update the data, except for the password (admin api)
+			userv1.PUT(":name/change-password", userController.ChangePassword)
 		}
 	}
 

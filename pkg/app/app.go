@@ -158,7 +158,7 @@ func NewApp(name string, basename string, opts ...Option) *App {
 	for _, o := range opts {
 		o(a)
 	}
-
+	// Add command line parameters.
 	a.buildCommand()
 
 	return a

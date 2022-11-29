@@ -18,6 +18,7 @@ type UserSrv interface {
 	Get(ctx context.Context, username string, opts metav1.GetOptions) (*v1.User, error)
 	Update(ctx context.Context, user *v1.User, opts metav1.UpdateOptions) error
 	ChangePassword(ctx context.Context, user *v1.User) error
+	Delete(ctx context.Context, username string, opts metav1.DeleteOptions) error
 }
 
 type userService struct {
@@ -53,6 +54,13 @@ func (u *userService) ChangePassword(ctx context.Context, user *v1.User) error {
 	// Save changed fields.
 	if err := u.store.Users().Update(ctx, user, metav1.UpdateOptions{}); err != nil {
 		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	return nil
+}
+
+func (u *userService) Delete(ctx context.Context, username string, opts metav1.DeleteOptions) error {
+	if err := u.store.Users().Delete(ctx, username, opts); err != nil {
+		return err
 	}
 	return nil
 }

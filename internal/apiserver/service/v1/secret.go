@@ -14,6 +14,8 @@ type SecretSrv interface {
 	List(ctx context.Context, username string, opts metav1.ListOptions) (*v1.SecretList, error)
 	Create(ctx context.Context, secret *v1.Secret, opts metav1.CreateOptions) error
 	Get(ctx context.Context, username, secretID string, opts metav1.GetOptions) (*v1.Secret, error)
+	Update(ctx context.Context, secret *v1.Secret, opts metav1.UpdateOptions) error
+	Delete(ctx context.Context, username, secretID string, opts metav1.DeleteOptions) error
 }
 
 type secretService struct {
@@ -41,6 +43,21 @@ func (s *secretService) Get(ctx context.Context, username, secretID string, opts
 		return nil, err
 	}
 	return secret, nil
+}
+
+func (s *secretService) Update(ctx context.Context, secret *v1.Secret, opts metav1.UpdateOptions) error {
+	// Save changed fields
+	if err := s.store.Secrets().Update(ctx, secret, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	return nil
+}
+
+func (s *secretService) Delete(ctx context.Context, username, secretID string, opts metav1.DeleteOptions) error {
+	if err := s.store.Secrets().Delete(ctx, username, secretID, opts); err != nil {
+		return err
+	}
+	return nil
 }
 
 var _ SecretSrv = (*secretService)(nil)

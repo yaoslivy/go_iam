@@ -71,6 +71,8 @@ func installController(g *gin.Engine) *gin.Engine {
 			secretv1.GET("", secretController.List)
 			secretv1.POST("", secretController.Create)
 			secretv1.GET(":name", secretController.Get)
+			secretv1.PUT(":name", secretController.Update)
+			secretv1.DELETE(":name", secretController.Delete)
 		}
 	}
 

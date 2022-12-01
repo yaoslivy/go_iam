@@ -69,6 +69,7 @@ func installController(g *gin.Engine) *gin.Engine {
 			secretController := secret.NewSecretController(storeIns)
 
 			secretv1.GET("", secretController.List)
+			secretv1.POST("", secretController.Create)
 		}
 	}
 

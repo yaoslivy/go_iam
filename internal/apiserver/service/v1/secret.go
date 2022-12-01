@@ -12,6 +12,7 @@ import (
 
 type SecretSrv interface {
 	List(ctx context.Context, username string, opts metav1.ListOptions) (*v1.SecretList, error)
+	Create(ctx context.Context, secret *v1.Secret, opts metav1.CreateOptions) error
 }
 
 type secretService struct {
@@ -24,6 +25,13 @@ func (s *secretService) List(ctx context.Context, username string, opts metav1.L
 		return nil, errors.WithCode(code.ErrDatabase, err.Error())
 	}
 	return secrets, nil
+}
+
+func (s *secretService) Create(ctx context.Context, secret *v1.Secret, opts metav1.CreateOptions) error {
+	if err := s.store.Secrets().Create(ctx, secret, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	return nil
 }
 
 var _ SecretSrv = (*secretService)(nil)

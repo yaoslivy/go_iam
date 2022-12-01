@@ -16,6 +16,7 @@ type SecretSrv interface {
 	Get(ctx context.Context, username, secretID string, opts metav1.GetOptions) (*v1.Secret, error)
 	Update(ctx context.Context, secret *v1.Secret, opts metav1.UpdateOptions) error
 	Delete(ctx context.Context, username, secretID string, opts metav1.DeleteOptions) error
+	DeleteCollection(ctx context.Context, username string, names []string, opts metav1.DeleteOptions) error
 }
 
 type secretService struct {
@@ -56,6 +57,13 @@ func (s *secretService) Update(ctx context.Context, secret *v1.Secret, opts meta
 func (s *secretService) Delete(ctx context.Context, username, secretID string, opts metav1.DeleteOptions) error {
 	if err := s.store.Secrets().Delete(ctx, username, secretID, opts); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (s *secretService) DeleteCollection(ctx context.Context, username string, names []string, opts metav1.DeleteOptions) error {
+	if err := s.store.Secrets().DeleteCollection(ctx, username, names, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
 	}
 	return nil
 }

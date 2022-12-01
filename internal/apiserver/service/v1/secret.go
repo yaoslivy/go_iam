@@ -13,6 +13,7 @@ import (
 type SecretSrv interface {
 	List(ctx context.Context, username string, opts metav1.ListOptions) (*v1.SecretList, error)
 	Create(ctx context.Context, secret *v1.Secret, opts metav1.CreateOptions) error
+	Get(ctx context.Context, username, secretID string, opts metav1.GetOptions) (*v1.Secret, error)
 }
 
 type secretService struct {
@@ -32,6 +33,14 @@ func (s *secretService) Create(ctx context.Context, secret *v1.Secret, opts meta
 		return errors.WithCode(code.ErrDatabase, err.Error())
 	}
 	return nil
+}
+
+func (s *secretService) Get(ctx context.Context, username, secretID string, opts metav1.GetOptions) (*v1.Secret, error) {
+	secret, err := s.store.Secrets().Get(ctx, username, secretID, opts)
+	if err != nil {
+		return nil, err
+	}
+	return secret, nil
 }
 
 var _ SecretSrv = (*secretService)(nil)

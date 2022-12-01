@@ -5,6 +5,7 @@ import "go_iam/internal/apiserver/store"
 // Service defines functions used to return resource interface.
 type Service interface {
 	Users() UserSrv
+	Secrets() SecretSrv
 }
 
 type service struct {
@@ -13,6 +14,10 @@ type service struct {
 
 func (s *service) Users() UserSrv {
 	return newUsers(s)
+}
+
+func (s *service) Secrets() SecretSrv {
+	return newSecrets(s)
 }
 
 // NewService returns Service interface

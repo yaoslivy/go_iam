@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"go_iam/internal/apiserver/controller/v1/secret"
 	"go_iam/internal/apiserver/controller/v1/user"
 	"go_iam/internal/apiserver/store/mysql"
 	"go_iam/internal/pkg/code"
@@ -59,6 +60,15 @@ func installController(g *gin.Engine) *gin.Engine {
 
 			userv1.GET("", userController.List)                //BindQuery
 			userv1.DELETE("", userController.DeleteCollection) //(admin api)
+		}
+
+		//secret RESTful resource
+		secretv1 := v1.Group("/secrets")
+		{
+			//secret controller
+			secretController := secret.NewSecretController(storeIns)
+
+			secretv1.GET("", secretController.List)
 		}
 	}
 

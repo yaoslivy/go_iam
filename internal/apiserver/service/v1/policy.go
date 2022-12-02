@@ -14,6 +14,7 @@ type PolicySrv interface {
 	List(ctx context.Context, username string, opts metav1.ListOptions) (*v1.PolicyList, error)
 	Create(ctx context.Context, policy *v1.Policy, opts metav1.CreateOptions) error
 	Get(ctx context.Context, username string, name string, opts metav1.GetOptions) (*v1.Policy, error)
+	Update(ctx context.Context, policy *v1.Policy, opts metav1.UpdateOptions) error
 }
 
 type policyService struct {
@@ -42,6 +43,14 @@ func (s *policyService) Get(ctx context.Context, username string, name string, o
 	}
 
 	return policy, nil
+}
+
+func (s *policyService) Update(ctx context.Context, policy *v1.Policy, opts metav1.UpdateOptions) error {
+	// Save changed fields.
+	if err := s.store.Policies().Update(ctx, policy, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+	return nil
 }
 
 var _ PolicySrv = (*policyService)(nil)

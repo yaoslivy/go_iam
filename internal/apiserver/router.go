@@ -84,6 +84,7 @@ func installController(g *gin.Engine) *gin.Engine {
 			policyController := policy.NewPolicyController(storeIns)
 
 			policyv1.GET("", policyController.List)
+			policyv1.POST("", policyController.Create)
 		}
 	}
 

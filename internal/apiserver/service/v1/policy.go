@@ -13,6 +13,7 @@ import (
 type PolicySrv interface {
 	List(ctx context.Context, username string, opts metav1.ListOptions) (*v1.PolicyList, error)
 	Create(ctx context.Context, policy *v1.Policy, opts metav1.CreateOptions) error
+	Get(ctx context.Context, username string, name string, opts metav1.GetOptions) (*v1.Policy, error)
 }
 
 type policyService struct {
@@ -32,6 +33,15 @@ func (s *policyService) Create(ctx context.Context, policy *v1.Policy, opts meta
 		return errors.WithCode(code.ErrDatabase, err.Error())
 	}
 	return nil
+}
+
+func (s *policyService) Get(ctx context.Context, username string, name string, opts metav1.GetOptions) (*v1.Policy, error) {
+	policy, err := s.store.Policies().Get(ctx, username, name, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return policy, nil
 }
 
 var _ PolicySrv = (*policyService)(nil)

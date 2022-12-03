@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"go_iam/internal/apiserver/controller/v1/policy"
 	"go_iam/internal/apiserver/controller/v1/secret"
 	"go_iam/internal/apiserver/controller/v1/user"
 	"go_iam/internal/apiserver/store/mysql"
@@ -74,6 +75,20 @@ func installController(g *gin.Engine) *gin.Engine {
 			secretv1.PUT(":name", secretController.Update)
 			secretv1.DELETE(":name", secretController.Delete)
 			secretv1.DELETE("", secretController.DeleteCollection)
+		}
+
+		// policy RESTful resource
+		policyv1 := v1.Group("/policies")
+		{
+			//policy controller
+			policyController := policy.NewPolicyController(storeIns)
+
+			policyv1.GET("", policyController.List)
+			policyv1.POST("", policyController.Create)
+			policyv1.GET(":name", policyController.Get)
+			policyv1.PUT(":name", policyController.Update)
+			policyv1.DELETE(":name", policyController.Delete)
+			policyv1.DELETE("", policyController.DeleteCollection)
 		}
 	}
 

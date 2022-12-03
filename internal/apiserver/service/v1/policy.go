@@ -15,6 +15,8 @@ type PolicySrv interface {
 	Create(ctx context.Context, policy *v1.Policy, opts metav1.CreateOptions) error
 	Get(ctx context.Context, username string, name string, opts metav1.GetOptions) (*v1.Policy, error)
 	Update(ctx context.Context, policy *v1.Policy, opts metav1.UpdateOptions) error
+	Delete(ctx context.Context, username string, name string, opts metav1.DeleteOptions) error
+	DeleteCollection(ctx context.Context, username string, names []string, opts metav1.DeleteOptions) error
 }
 
 type policyService struct {
@@ -50,6 +52,21 @@ func (s *policyService) Update(ctx context.Context, policy *v1.Policy, opts meta
 	if err := s.store.Policies().Update(ctx, policy, opts); err != nil {
 		return errors.WithCode(code.ErrDatabase, err.Error())
 	}
+	return nil
+}
+
+func (s *policyService) Delete(ctx context.Context, username string, name string, opts metav1.DeleteOptions) error {
+	if err := s.store.Policies().Delete(ctx, username, name, opts); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *policyService) DeleteCollection(ctx context.Context, username string, names []string, opts metav1.DeleteOptions) error {
+	if err := s.store.Policies().DeleteCollection(ctx, username, names, opts); err != nil {
+		return errors.WithCode(code.ErrDatabase, err.Error())
+	}
+
 	return nil
 }
 

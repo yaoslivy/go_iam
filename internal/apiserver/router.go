@@ -64,7 +64,7 @@ func installController(g *gin.Engine) *gin.Engine {
 		}
 
 		//secret RESTful resource
-		secretv1 := v1.Group("/secrets")
+		secretv1 := v1.Group("/secrets", middleware.Publish())
 		{
 			//secret controller
 			secretController := secret.NewSecretController(storeIns)
@@ -78,7 +78,7 @@ func installController(g *gin.Engine) *gin.Engine {
 		}
 
 		// policy RESTful resource
-		policyv1 := v1.Group("/policies")
+		policyv1 := v1.Group("/policies", middleware.Publish())
 		{
 			//policy controller
 			policyController := policy.NewPolicyController(storeIns)

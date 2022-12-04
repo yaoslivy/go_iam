@@ -1,0 +1,68 @@
+# iam-authz-server all config
+
+# IAM rpc
+rpcserver: ${IAM_AUTHZ_SERVER_RPCSERVER} 
+
+# TLS
+client-ca-file: ${IAM_AUTHZ_SERVER_CLIENT_CA_FILE} 
+
+# RESTful 
+server:
+    mode: debug # server mode: release, debug, test，default release
+    healthz: true 
+    middlewares: recovery,logger,secure,nocache,cors,dump 
+
+# HTTP 
+insecure:
+    bind-address: ${IAM_AUTHZ_SERVER_INSECURE_BIND_ADDRESS} 
+    bind-port: ${IAM_AUTHZ_SERVER_INSECURE_BIND_PORT}  
+
+# HTTPS 
+secure:
+    bind-address: ${IAM_AUTHZ_SERVER_SECURE_BIND_ADDRESS}  
+    bind-port: ${IAM_AUTHZ_SERVER_SECURE_BIND_PORT} 
+    tls:
+        #cert-dir: .iam/cert 
+        #pair-name: iam 
+        cert-key:
+            cert-file: ${IAM_AUTHZ_SERVER_SECURE_TLS_CERT_KEY_CERT_FILE} 
+            private-key-file: ${IAM_AUTHZ_SERVER_SECURE_TLS_CERT_KEY_PRIVATE_KEY_FILE} 
+
+# Redis 
+redis:
+  host: ${REDIS_HOST} # default 127.0.0.1:6379
+  port: ${REDIS_PORT} # default 6379
+  password: ${REDIS_PASSWORD} 
+  database: 0 # redis database
+  #addrs:
+  #master-name: # redis cluster master name
+  #username: 
+  #optimisation-max-idle:  
+  #optimisation-max-active: 
+  #timeout: 
+  #enable-cluster: 
+  #use-ssl: 
+  #ssl-insecure-skip-verify: 
+
+log:
+    name: authzserver 
+    development: true 
+    level: debug 
+    format: console 
+    enable-color: true 
+    disable-caller: false 
+    disable-stacktrace: false 
+    output-paths: ${IAM_LOG_DIR}/iam-authz-server.log,stdout 
+    error-output-paths: ${IAM_LOG_DIR}/iam-authz-server.error.log 
+
+analytics:
+    enable: true 
+    pool-size: 50 
+    records-buffer-size:  2000 
+    flush-interval: 200 
+    enable-detailed-recording: true 
+    storage-expiration-time: 24h0m0s 
+
+feature:
+  enable-metrics: true 
+  profiling: true 

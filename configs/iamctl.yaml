@@ -1,0 +1,22 @@
+
+apiVersion: v1
+user:
+  #token: # JWT Token
+  username: ${CONFIG_USER_USERNAME} 
+  password: ${CONFIG_USER_PASSWORD} 
+  #secret-id: 
+  #secret-key: 
+  client-certificate: ${CONFIG_USER_CLIENT_CERTIFICATE} 
+  client-key: ${CONFIG_USER_CLIENT_KEY} 
+  #client-certificate-data:
+  #client-key-data:
+
+server:
+  address: https://${CONFIG_SERVER_ADDRESS} 
+  timeout: 10s 
+  #max-retries: # default 0
+  #retry-interval: #  default 1s
+  #tls-server-name: # 
+  #insecure-skip-tls-verify: 
+  certificate-authority: ${CONFIG_SERVER_CERTIFICATE_AUTHORITY} 
+  #certificate-authority-data:

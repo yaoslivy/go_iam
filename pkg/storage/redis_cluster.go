@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"go_iam/pkg/log"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -13,8 +14,6 @@ import (
 	"github.com/marmotedu/errors"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
-
-	"github.com/marmotedu/iam/pkg/log"
 )
 
 // Config defines options for redis cluster.

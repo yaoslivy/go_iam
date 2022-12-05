@@ -1,12 +1,11 @@
 package log_test
 
 import (
+	"go_iam/pkg/log"
 	"testing"
 
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/marmotedu/iam/pkg/log"
 )
 
 func Test_WithName(t *testing.T) {

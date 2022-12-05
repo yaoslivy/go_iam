@@ -7,6 +7,7 @@ import (
 	"go_iam/internal/pkg/middleware"
 	"go_iam/internal/pkg/middleware/auth"
 	v1 "go_iam/internal/pkg/model/apiserver/v1"
+	"go_iam/pkg/log"
 	"net/http"
 	"strings"
 	"time"
@@ -15,8 +16,6 @@ import (
 	"github.com/gin-gonic/gin"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/spf13/viper"
-
-	"github.com/marmotedu/iam/pkg/log"
 )
 
 const (

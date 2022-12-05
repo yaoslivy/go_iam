@@ -3,8 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-
-	"github.com/marmotedu/iam/pkg/log"
+	"go_iam/pkg/log"
 )
 
 var (

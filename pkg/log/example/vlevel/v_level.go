@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/marmotedu/iam/pkg/log"
-)
+import "go_iam/pkg/log"
 
 func main() {
 	defer log.Flush()

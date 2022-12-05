@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 package proto;
-option go_package = "github.com/marmotedu/api/proto/apiserver/v1";
+option go_package = "go_iam/internal/pkg/proto/apiserver/v1";
 
 //go:generate protoc -I. --go_out=plugins=grpc:.
 

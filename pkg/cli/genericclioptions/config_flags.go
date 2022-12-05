@@ -3,12 +3,12 @@ package genericclioptions
 import (
 	"flag"
 	"fmt"
+	"go_iam/pkg/sdk/rest"
+	"go_iam/pkg/sdk/tools/clientcmd"
 	"sync"
 	"time"
 
 	"github.com/AlekSi/pointer"
-	"github.com/marmotedu/marmotedu-sdk-go/rest"
-	"github.com/marmotedu/marmotedu-sdk-go/tools/clientcmd"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )

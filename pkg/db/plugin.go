@@ -1,11 +1,10 @@
 package db
 
 import (
+	"go_iam/pkg/log"
 	"time"
 
 	"gorm.io/gorm"
-
-	"github.com/marmotedu/iam/pkg/log"
 )
 
 const (

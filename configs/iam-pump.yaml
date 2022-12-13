@@ -1,0 +1,43 @@
+
+purge-delay: 10 # Audit log purge interval, default 10s. 
+health-check-path: healthz # Health check routing, default is /healthz.
+health-check-address: 0.0.0.0:7070 # Health check bind port, default is 0.0.0.0:7070
+omit-detailed-recording: true # Set to true to record detailed authorization audit logs, default is false
+
+# Redis configurations
+redis:
+  host: ${REDIS_HOST} # redis address, default 127.0.0.1:6379
+  port: ${REDIS_PORT} # redis port, default 6379
+  password: ${REDIS_PASSWORD} # redis password
+  database: 0 # redis database
+  optimisation-max-idle: 100  # The maximum number of free connections in the redis connection pool.
+  optimisation-max-active: 0 # Maximum number of active connections.
+  enable-cluster: false # Whether to enable cluster mode.
+  #addrs:
+  #master-name: # redis cluster master name
+  #username: # redis login username
+  #timeout: # timeout time when connecting to redis
+  #use-ssl: # whether TLS is enabled
+  #ssl-insecure-skip-verify: #  Allow self-signed certificates when connecting to redis
+
+
+# pump configurations
+pumps:
+  mongo:
+    type: mongo # pump type
+    meta:
+      collection_name: ${IAM_PUMP_COLLECTION_NAME} # mongodb collection name
+      mongo_url: ${IAM_PUMP_MONGO_URL} # mongodb url
+      collection_cap_max_size_bytes: 1048576 # 设置最大的capped collection
+      collection_cap_enable: true
+
+log:
+    name: pump # Logger name
+    development: true # whether it is development mode. If it is development mode, a stack trace trace is performed on DPanicLevel.
+    level: debug # Logging levels, in descending order of priority: debug, info, warn, error, dpanic, panic, fatal.
+    format: console # The supported log output format, currently supports console and json two. console is actually text format.
+    enable-color: true # Whether to enable color output, true:yes, false:no
+    disable-caller: false # Whether caller is enabled or not, if it is enabled, the file, function and line number where the caller log is located will be shown in the log
+    disable-stacktrace: false # Whether to disable printing of stack information at panic level and above
+    output-paths: ${IAM_LOG_DIR}/iam-pump.log,stdout # Multiple outputs, comma separated. stdout: standard output.
+    error-output-paths: ${IAM_LOG_DIR}/iam-pump.error.log # zap internal (non-business) error log output path, multiple outputs, comma separated

@@ -9,15 +9,14 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"go_iam/pkg/sdk/marmotedu"
+	"go_iam/pkg/sdk/tools/clientcmd"
 	"path/filepath"
 
 	"github.com/ory/ladon"
 
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/component-base/pkg/util/homedir"
-
-	"github.com/marmotedu/marmotedu-sdk-go/marmotedu"
-	"github.com/marmotedu/marmotedu-sdk-go/tools/clientcmd"
 )
 
 func main() {
@@ -25,7 +24,7 @@ func main() {
 	if home := homedir.HomeDir(); home != "" {
 		iamconfig = flag.String(
 			"iamconfig",
-			filepath.Join(home, ".iam", "config"),
+			filepath.Join(home, "iam", "etc", "iam", "sdk", "iam-authz-server-sdk.yaml"),
 			"(optional) absolute path to the iamconfig file",
 		)
 	} else {
@@ -48,7 +47,7 @@ func main() {
 	request := &ladon.Request{
 		Resource: "resources:articles:ladon-introduction",
 		Action:   "delete",
-		Subject:  "users:peter",
+		Subject:  "users:maria",
 		Context: ladon.Context{
 			"remoteIP": "192.168.0.5",
 		},

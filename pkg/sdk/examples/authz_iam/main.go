@@ -25,7 +25,7 @@ func main() {
 	if home := homedir.HomeDir(); home != "" {
 		iamconfig = flag.String(
 			"iamconfig",
-			filepath.Join(home, ".iam", "config"),
+			filepath.Join(home, "iam", "etc", "iam", "sdk", "iam-authz-server-sdk.yaml"),
 			"(optional) absolute path to the iamconfig file",
 		)
 	} else {

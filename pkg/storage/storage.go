@@ -12,9 +12,8 @@ import (
 	"time"
 
 	"github.com/buger/jsonparser"
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/marmotedu/iam/third_party/forked/murmur3"
+	uuid "github.com/satori/go.uuid"
 )
 
 // ErrKeyNotFound is a standard error for when a key is not found in the storage engine.

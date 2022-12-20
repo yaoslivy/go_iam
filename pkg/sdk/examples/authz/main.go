@@ -8,6 +8,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"go_iam/pkg/sdk/tools/clientcmd"
 	"path/filepath"
 
 	"github.com/ory/ladon"
@@ -15,8 +16,7 @@ import (
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/component-base/pkg/util/homedir"
 
-	authzclientv1 "github.com/marmotedu/marmotedu-sdk-go/marmotedu/service/iam/authz/v1"
-	"github.com/marmotedu/marmotedu-sdk-go/tools/clientcmd"
+	authzclientv1 "go_iam/pkg/sdk/marmotedu/service/iam/authz/v1"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	if home := homedir.HomeDir(); home != "" {
 		iamconfig = flag.String(
 			"iamconfig",
-			filepath.Join(home, ".iam", "config"),
+			filepath.Join(home, "iam", "etc", "iam", "sdk", "iam-authz-server-sdk.yaml"),
 			"(optional) absolute path to the iamconfig file",
 		)
 	} else {

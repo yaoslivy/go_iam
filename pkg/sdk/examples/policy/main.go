@@ -10,6 +10,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"go_iam/pkg/sdk/marmotedu/service/iam"
+	"go_iam/pkg/sdk/tools/clientcmd"
 	"os"
 	"path/filepath"
 
@@ -18,9 +20,6 @@ import (
 	v1 "github.com/marmotedu/api/apiserver/v1"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/component-base/pkg/util/homedir"
-
-	"github.com/marmotedu/marmotedu-sdk-go/marmotedu/service/iam"
-	"github.com/marmotedu/marmotedu-sdk-go/tools/clientcmd"
 )
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 	if home := homedir.HomeDir(); home != "" {
 		iamconfig = flag.String(
 			"iamconfig",
-			filepath.Join(home, ".iam", "config"),
+			filepath.Join(home, "iam", "etc", "iam", "sdk", "iam-apiserver-sdk.yaml"),
 			"(optional) absolute path to the iamconfig file",
 		)
 	} else {
